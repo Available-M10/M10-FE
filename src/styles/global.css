@@ -1,0 +1,31 @@
+/* src/styles/global.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    @apply h-full;
+  }
+
+  * {
+    @apply m-0 p-0 box-border;
+  }
+
+  body {
+    @apply font-sans font-medium text-[15px] leading-[100%] text-black bg-white;
+  }
+
+  #root {
+    @apply w-full h-screen;
+  }
+
+  a {
+    @apply no-underline text-inherit;
+  }
+
+  button {
+    @apply cursor-pointer border-none bg-none;
+  }
+}
