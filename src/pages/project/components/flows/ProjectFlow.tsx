@@ -1,7 +1,7 @@
 import { ReactFlow, Background, Controls } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useNode } from "@/hooks/useNode";
-import { useEdge } from "@/hooks/useEdge";
+import { useNode } from "@/pages/project/components/flows/hooks/useNode";
+import { useEdge } from "@/pages/project/components/flows/hooks/useEdge";
 
 export function ProjectFlow() {
   const initialNodes = [

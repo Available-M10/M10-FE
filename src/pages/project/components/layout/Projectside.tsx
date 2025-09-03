@@ -1,4 +1,4 @@
-import { ButtonFlowSide } from "@/components/ui/button.folw.side";
+import { ButtonFlowSide } from "@/pages/project/components/ui/ProjectSideButton";
 
 export function ProjectSide() {
   return (
