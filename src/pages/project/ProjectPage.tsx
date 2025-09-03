@@ -1,6 +1,6 @@
-import { ProjectHead } from "./ProjectHead";
-import { ProjectFlow } from "./projectFlow";
-import { ProjectSide } from "./projectside";
+import { ProjectHead } from "./components/layout/ProjectHead";
+import { ProjectFlow } from "./components/flows/ProjectFlow";
+import { ProjectSide } from "./components/layout/Projectside";
 
 export function ProjectPage() {
   return (
