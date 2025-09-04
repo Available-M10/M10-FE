@@ -1,11 +1,16 @@
-import setting from "@/assets/icon-setting.svg"
+import setting from "@/assets/icon-setting.svg";
 
 type ButtonProps = {
   label: string;
   bgColor?: string;
+  fontColor?: string;
 };
 
-export function Button({ label, bgColor = "bg-white" }: ButtonProps) {
+export function Button({
+  label,
+  bgColor = "bg-white",
+  fontColor = "black",
+}: ButtonProps) {
   const buttonClass = "w-1/3 h-2/3 rounded-lg border border-[#DDDDDD]";
 
   return (
@@ -15,7 +20,7 @@ export function Button({ label, bgColor = "bg-white" }: ButtonProps) {
           <img src={setting} className="w-1/3 flex" />
         </button>
       ) : (
-        <button className={`${bgColor} w-full h-full rounded-lg`}>
+        <button className={`${bgColor} ${fontColor} w-full h-full rounded-lg`}>
           {label}
         </button>
       )}
