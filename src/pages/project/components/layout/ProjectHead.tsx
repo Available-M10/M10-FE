@@ -6,10 +6,10 @@ export function ProjectHead() {
     <div className="h-[10%] border-b border-gray-250 flex justify-between px-5 text-xs">
       <LogoTitle />
       <div className="w-1/4 h-full flex items-center justify-center gap-x-3">
+        <Button label="icon-chat" />
+        <Button label="icon-note-project" />
         <Button label="저장" />
-        <Button label="테스트" />
         <Button label="실행" bgColor="bg-[#FF6D5A]" fontColor="text-white" />
-        <Button label="setting" />
       </div>
     </div>
   );
