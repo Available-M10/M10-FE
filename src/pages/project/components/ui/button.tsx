@@ -1,9 +1,17 @@
 import setting from "@/assets/icon-setting.svg";
+import chat from "@/assets/icon-chat.svg";
+import note from "@/assets/icon-note-project.svg";
 
 type ButtonProps = {
   label: string;
   bgColor?: string;
   fontColor?: string;
+};
+
+const icons: Record<string, string> = {
+  "icon-chat": chat,
+  "icon-note-project": note,
+  setting: setting,
 };
 
 export function Button({
@@ -13,34 +21,21 @@ export function Button({
 }: ButtonProps) {
   const buttonClass = "w-1/3 h-2/3 rounded-lg border border-[#DDDDDD]";
 
+  if (icons[label]) {
+    return (
+      <div className={`${buttonClass} ${bgColor} ${fontColor}`}>
+        <button className={`w-full h-full flex items-center justify-center`}>
+          <img src={icons[label]} className="w-1/3" />
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className={`${buttonClass}`}>
-      {label === "setting" ? (
-        <button className={`w-full h-full flex items-center justify-center`}>
-          <img src={setting} className="w-1/3 flex" />
-        </button>
-      ) : (
-        <button className={`${bgColor} ${fontColor} w-full h-full rounded-lg`}>
-          {label}
-        </button>
-      )}
+      <button className={`${bgColor} ${fontColor} w-full h-full rounded-lg`}>
+        {label}
+      </button>
     </div>
   );
-}
-
-{
-  /* <div className={`${buttonClass}`}>
-          <button className="w-full h-full">저장</button>
-        </div>
-        <div className={`${buttonClass}`}>
-          <button className="w-full h-full">테스트</button>
-        </div>
-        <div className={`${buttonClass} bg-[#FF6D5A]`}>
-          <button className="w-full h-full text-white">실행</button>
-        </div>
-        <div className={`${buttonClass}`}>
-          <button className={`w-full h-full flex items-center justify-center`}>
-            <img src={setting} className="w-1/3 flex" />
-          </button>
-        </div> */
 }
