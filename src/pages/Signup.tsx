@@ -72,7 +72,7 @@ export const Signup = () => {
             <Tabs defaultValue="signup" className="w-full">
               <TabsList className="w-full max-w-[449px] h-[69px] flex justify-center items-center mx-auto gap-2 rounded-[11px] bg-gray-0 p-2">
                 <div
-                  onClick={() => navigate("/")}
+                  onClick={() => navigate("/login")}
                   className="w-[204px] h-[52px] flex justify-center items-center cursor-pointer rounded-[11px] bg-gray-0 text-gray-600 hover:bg-gray-100 hover:text-black transition-all"
                 >
                   로그인
