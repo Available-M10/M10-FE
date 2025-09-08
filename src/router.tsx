@@ -1,8 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
+import { MainPage } from "@/pages/MainPage";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    element: <></>, //페이지 개발하면 나중에 추가
+    path: "/main",
+    element: <MainPage />,
   },
 ]);
