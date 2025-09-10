@@ -14,11 +14,11 @@ export function ProjectHead() {
           iconName="icon-note-project"
           onclick={() => setSide("node")}
         />
-        <TextButton label="저장" />
+        <TextButton label="저장" onClick={() => setSide("save")} />
         <TextButton
           label="실행"
           bgColor="bg-[#FF6D5A]"
-          fontColor="text-white"
+          fontColor="text-white" onClick={() => setSide("start")}
         />
       </div>
     </div>
