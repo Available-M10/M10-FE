@@ -2,22 +2,13 @@ import { ReactFlow, Background, Controls } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useNode } from "@/pages/project/components/flows/hooks/useNode";
 import { useEdge } from "@/pages/project/components/flows/hooks/useEdge";
+import { CustomNode } from "./components/CustomNode";
+import { useFlow } from "../../context/FlowContext";
 
 export function ProjectFlow() {
-  const initialNodes = [
-    {
-      id: "n1",
-      position: { x: 0, y: 0 },
-      data: { label: "Node 1" },
-      type: "input",
-    },
-    { id: "n2", position: { x: 100, y: 100 }, data: { label: "Node 2" } },
-  ];
-
-  const initialEdges = [{ id: "n1-n2", source: "n1", target: "n2" }];
-
-  const { nodes, setNodes, onNodesChange } = useNode(initialNodes);
-  const { edges, setEdges, onEdgesChange, onConnect } = useEdge(initialEdges);
+  const { onNodesChange } = useNode([]);
+  const { onEdgesChange, onConnect } = useEdge([]);
+  const { nodes, edges } = useFlow();
 
   return (
     <div className="w-full h-full">
@@ -27,6 +18,7 @@ export function ProjectFlow() {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        nodeTypes={{ custom: CustomNode }}
         fitView
       >
         <Background />
