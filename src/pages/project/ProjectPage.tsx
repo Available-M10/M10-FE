@@ -1,11 +1,11 @@
 import { ProjectHead } from "./components/layout/ProjectHead";
-import { ProjectSide } from "./components/layout/Projectside";
+import { ProjectSide } from "./components/layout/ProjectSide";
 import { ProjectFlow } from "./components/flows/ProjectFlow";
-import { ProjectProvider } from "./context/ProjectContext";
+import { Wrapper } from "./context/Wrapper";
 
 export function ProjectPage() {
   return (
-    <ProjectProvider>
+    <Wrapper>
       <div className="flex flex-col h-screen">
         <ProjectHead />
         <div className="flex flex-1">
@@ -13,6 +13,6 @@ export function ProjectPage() {
           <ProjectSide />
         </div>
       </div>
-    </ProjectProvider>
+    </Wrapper>
   );
 }
