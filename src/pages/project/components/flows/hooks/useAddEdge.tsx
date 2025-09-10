@@ -11,7 +11,6 @@ export function useAddEdge() {
         source: sourceId,
         target: targetId,
         type: "smoothstep",
-        // style: { stroke: "gray", strokeWidth: 2 },
       },
     ]);
   };

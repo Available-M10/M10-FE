@@ -9,7 +9,6 @@ export function CustomNode({ data }) {
       style={{
         width: "100%",
         height: 50,
-        ...nodeConfig.style,
       }}
     >
       {nodeConfig.label}

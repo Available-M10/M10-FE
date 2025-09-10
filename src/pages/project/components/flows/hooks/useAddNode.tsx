@@ -19,7 +19,11 @@ export function useAddNode({ activeTab }: SideActionsProps) {
         position: { x: 0, y: 0 },
         type: "custom",
         data: {
-          nodeConfig,
+          nodeConfig: {
+            label: labelMap[key].label,
+            labelKey: key,
+            style: labelMap[key].style,
+          },
           handlePosition:
             activeTab === "시작"
               ? "Right"

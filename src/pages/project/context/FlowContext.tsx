@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import type { Node, Edge } from "@xyflow/react";
+import { labelMap } from "../components/flows/components/lables/LabelMap";
 
 type ProjectContextType = {
   nodes: Node[];
@@ -13,12 +14,50 @@ const FLowContext = createContext<ProjectContextType | undefined>(undefined);
 export function FlowProvider({ children }: { children: ReactNode }) {
   const [nodes, setNodes] = useState<Node[]>(() => {
     const saved = localStorage.getItem("nodes");
-    return saved ? JSON.parse(saved) : [];
+    if (!saved) return [];
+
+    const parsed = JSON.parse(saved);
+
+    return parsed.map((node: any) => {
+      const key = node.data?.nodeConfig?.labelKey;
+      const config = key ? labelMap[key] : undefined;
+
+      return {
+        ...node,
+        data: {
+          ...node.data,
+          nodeConfig: {
+            labelKey: key,
+            label: config ? config.label : null,
+            style: config ? config.style : {},
+          },
+        },
+      };
+    });
   });
 
   const [edges, setEdges] = useState<Edge[]>(() => {
     const saved = localStorage.getItem("edges");
-    return saved ? JSON.parse(saved) : [];
+    if (!saved) return [];
+
+    const parsed = JSON.parse(saved);
+
+    return parsed.map((node: any) => {
+      const key = node.data?.nodeConfig?.labelKey;
+      const config = key ? labelMap[key] : undefined;
+
+      return {
+        ...node,
+        data: {
+          ...node.data,
+          nodeConfig: {
+            labelKey: key,
+            label: config ? config.label : null,
+            style: config ? config.style : {},
+          },
+        },
+      };
+    });
   });
 
   return (
