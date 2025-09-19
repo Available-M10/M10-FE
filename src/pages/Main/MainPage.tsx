@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LeftArrow from "@/assets/icon-left_arrow.svg";
 import RightArrow from "@/assets/icon-right_arrow.svg";
 import Plus from "@/assets/icon-plus.svg";
@@ -18,8 +18,11 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { createProject } from "./api/createProject";
+import { updateProject } from "./api/updateProject";
+import { deleteProject } from "./api/deleteProject";
 
 export const MainPage = () => {
+  // 상태 선언
   const [projects, setProjects] = useState([
     {
       id: 1,
@@ -34,19 +37,23 @@ export const MainPage = () => {
       description: "신규 고객에게 환영 이메일을 자동으로 발송합니다.",
     },
   ]);
-
+  const [inputValue, setInputValue] = useState("");
   const [openModal, setOpenModal] = useState<"trash" | "edit" | "plus" | null>(
     null
   );
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [inputValue, setInputValue] = useState("");
 
+  useEffect(() => {
+    const tempToken = "";
+    localStorage.setItem("accessToken", tempToken);
+  }, []);
+
+  // 프로젝트 생성
   const handleAddProject = async () => {
     if (!inputValue.trim()) {
       alert("프로젝트명을 입력해주세요.");
       return;
     }
-
     try {
       const newProject = await createProject(inputValue);
       setProjects([
@@ -65,33 +72,75 @@ export const MainPage = () => {
     }
   };
 
-  const handleEditProject = () => {
+  // 프로젝트 수정
+
+  const handleEditProject = async () => {
     if (!inputValue.trim() || selectedId === null) {
       alert("프로젝트명을 입력해주세요.");
       return;
     }
-    setProjects(
-      projects.map((p) =>
-        p.id === selectedId ? { ...p, title: inputValue } : p
-      )
-    );
-    setInputValue("");
-    setSelectedId(null);
-    setOpenModal(null);
+
+    try {
+      const result = await updateProject(selectedId, inputValue);
+
+      setProjects(
+        projects.map((p) =>
+          p.id === selectedId ? { ...p, title: inputValue } : p
+        )
+      );
+      setInputValue("");
+      setSelectedId(null);
+      setOpenModal(null);
+
+      alert(`프로젝트 수정 성공!\n수정된 이름: ${result.name || inputValue}`);
+    } catch (error: any) {
+      console.error(error);
+
+      let message = "알 수 없는 오류";
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            message = "유효하지 않은 요청입니다.";
+            break;
+          case 401:
+            message = "로그인되지 않은 사용자입니다.";
+            break;
+          case 403:
+            message = "권한이 없습니다.";
+            break;
+          case 404:
+            message = "요청한 정보가 존재하지 않습니다.";
+            break;
+          case 409:
+            message = "허용되지 않는 요청입니다.";
+            break;
+          case 500:
+            message = "서버 오류입니다. 백엔드에 문의하세요.";
+            break;
+        }
+      }
+      alert(`프로젝트 수정 실패\n${message}`);
+    }
   };
 
-  const handleDeleteProject = () => {
+  // 프로젝트 삭제
+  const handleDeleteProject = async () => {
     if (selectedId === null) return;
-    setProjects(projects.filter((p) => p.id !== selectedId));
-    setSelectedId(null);
-    setOpenModal(null);
+    try {
+      await deleteProject(selectedId);
+      setProjects((prev) => prev.filter((p) => p.id !== selectedId));
+      setSelectedId(null);
+      setOpenModal(null);
+    } catch (error: any) {
+      alert("프로젝트 삭제 중 오류가 발생했습니다.");
+    }
   };
 
   return (
     <div className="min-h-screen">
       <div className="h-[56px] bg-white"></div>
 
-      {/* 배너쪽 */}
+      {/* 배너 */}
       <div className="relative bg-main-200 px-8 py-16 overflow-visible">
         <button className="absolute left-[60px] top-1/2 transform -translate-y-1/2 z-10">
           <img src={LeftArrow} alt="icon-leftArrow" />
@@ -134,7 +183,7 @@ export const MainPage = () => {
         </div>
       </div>
 
-      {/* 프로젝트쪽 */}
+      {/* 프로젝트 목록 */}
       <div className="max-w-6xl mx-auto px-8 py-16">
         <h2 className="text-[35px] font-semibold text-gray-400 mb-8">
           프로젝트 목록
@@ -161,6 +210,7 @@ export const MainPage = () => {
         </div>
       </div>
 
+      {/* 생성 버튼 */}
       <button
         className="fixed bottom-8 right-8 bg-main-200 text-white rounded-full p-4 shadow-lg"
         onClick={() => {
@@ -171,6 +221,7 @@ export const MainPage = () => {
         <img src={Plus} alt="" />
       </button>
 
+      {/* 다이얼로그 */}
       <Dialog open={!!openModal} onOpenChange={() => setOpenModal(null)}>
         <DialogContent className="sm:max-w-[500px] rounded-[20px] bg-white p-8 text-center gap-6">
           {/* 삭제 */}
