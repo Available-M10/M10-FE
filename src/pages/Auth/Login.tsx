@@ -31,6 +31,7 @@ export const Login = () => {
       });
 
       console.log("로그인 성공:", response.data);
+      localStorage.setItem("accessToken", response.data.accessToken);
       alert("로그인 성공!");
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
