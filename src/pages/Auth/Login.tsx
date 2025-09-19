@@ -31,7 +31,12 @@ export const Login = () => {
       });
 
       console.log("로그인 성공:", response.data);
-      localStorage.setItem("accessToken", response.data.accessToken);
+      const accessToken = response.data.access_token;
+      const refreshToken = response.data.refresh_token;
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      console.log("저장된 accessToken:", localStorage.getItem("accessToken"));
       alert("로그인 성공!");
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
