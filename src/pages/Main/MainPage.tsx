@@ -43,10 +43,7 @@ export const MainPage = () => {
   );
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  useEffect(() => {
-    const tempToken = "";
-    localStorage.setItem("accessToken", tempToken);
-  }, []);
+  useEffect(() => {}, []);
 
   // 프로젝트 생성
   const handleAddProject = async () => {
@@ -67,7 +64,8 @@ export const MainPage = () => {
       ]);
       setInputValue("");
       setOpenModal(null);
-    } catch (error) {
+    } catch (error: any) {
+      console.error("프로젝트 생성 실패:", error);
       alert("프로젝트 생성 중 오류가 발생했습니다.");
     }
   };
