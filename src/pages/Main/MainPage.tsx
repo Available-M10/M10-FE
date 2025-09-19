@@ -17,6 +17,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { createProject } from "./api/createProject";
 
 export const MainPage = () => {
   const [projects, setProjects] = useState([
@@ -40,20 +41,28 @@ export const MainPage = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [inputValue, setInputValue] = useState("");
 
-  const handleAddProject = () => {
+  const handleAddProject = async () => {
     if (!inputValue.trim()) {
       alert("프로젝트명을 입력해주세요.");
       return;
     }
-    const newProject = {
-      id: Date.now(),
-      title: inputValue,
-      status: "활성",
-      description: "새 프로젝트 설명",
-    };
-    setProjects([...projects, newProject]);
-    setInputValue("");
-    setOpenModal(null);
+
+    try {
+      const newProject = await createProject(inputValue);
+      setProjects([
+        ...projects,
+        {
+          id: newProject.id,
+          title: newProject.name,
+          status: newProject.active ? "활성" : "비활성",
+          description: "새 프로젝트 설명",
+        },
+      ]);
+      setInputValue("");
+      setOpenModal(null);
+    } catch (error) {
+      alert("프로젝트 생성 중 오류가 발생했습니다.");
+    }
   };
 
   const handleEditProject = () => {
@@ -220,7 +229,7 @@ export const MainPage = () => {
             </>
           )}
 
-          {/* 생성ㄴ */}
+          {/* 생성 */}
           {openModal === "plus" && (
             <>
               <img src={Target} className="w-[70px] h-[70px] mx-auto" alt="" />
@@ -260,7 +269,7 @@ export const MainPage = () => {
   );
 };
 
-//프로젝트 카드들
+// 프로젝트 카드 컴포넌트
 const ProjectCard = ({
   title,
   status,
