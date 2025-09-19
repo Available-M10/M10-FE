@@ -39,7 +39,7 @@ export const Signup = () => {
     }
 
     try {
-      const response = await axios.post(`${BASE_URL}/auth/signup`, {
+      const response = await axios.post("/auth/signup", {
         account_id: isId,
         password: isPassword,
       });

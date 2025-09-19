@@ -25,7 +25,7 @@ export const Login = () => {
     }
 
     try {
-      const response = await axios.post(`${BASE_URL}/auth/login`, {
+      const response = await axios.post("/auth/login", {
         account_id: isId,
         password: isPassword,
       });
