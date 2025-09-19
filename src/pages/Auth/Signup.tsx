@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import Smile from "@/assets/icon-smile.svg";
 import Cat from "@/assets/icon-cat.svg";
 import Person from "@/assets/icon-person.svg";
@@ -15,32 +17,65 @@ export const Signup = () => {
   const [isPassword, setIsPassword] = useState<string>("");
 
   const navigate = useNavigate();
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-  const existingUsers = ["testuser", "admin", "hello"];
+  console.log("BASE_URL:", BASE_URL);
 
   const isIdValid = isId.length >= 3 && isId.length <= 10;
   const isPasswordValid = isPassword.length >= 6;
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!isId.trim() || !isPassword.trim()) {
       alert("모든 항목을 입력해주세요");
       return;
     }
     if (!isIdValid) {
       alert("아이디가 3 ~ 10자여야합니다");
+      return;
     }
     if (!isPasswordValid) {
       alert("비밀번호는 최소 6자 이상이어야 합니다");
       return;
     }
-    if (existingUsers.includes(isId)) {
-      alert("이미 존재하는 아이디입니다");
-      return;
-    }
 
-    console.log("회원가입 요청:", { id: isId, password: isPassword });
-    alert("회원가입 성공! 로그인 페이지로 이동합니다.");
-    navigate("/login");
+    try {
+      const response = await axios.post(`${BASE_URL}/auth/signup`, {
+        account_id: isId,
+        password: isPassword,
+      });
+
+      console.log("회원가입 성공:", response.data);
+      alert("회원가입 성공! 로그인 페이지로 이동합니다.");
+      navigate("/login");
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        switch (status) {
+          case 400:
+            alert("유효하지 않은 요청입니다");
+            break;
+          case 401:
+            alert("로그인되지 않은 유저입니다");
+            break;
+          case 403:
+            alert("권한이 없습니다");
+            break;
+          case 404:
+            alert("요청한 정보가 존재하지 않습니다");
+            break;
+          case 409:
+            alert("이미 존재하는 아이디입니다");
+            break;
+          case 500:
+            alert("서버 오류입니다. 관리자에게 문의하세요");
+            break;
+          default:
+            alert("알 수 없는 오류가 발생했습니다");
+        }
+      } else {
+        alert("네트워크 오류가 발생했습니다");
+      }
+    }
   };
 
   return (
@@ -106,7 +141,6 @@ export const Signup = () => {
                         value={isId}
                         onChange={(e) => {
                           setIsId(e.target.value);
-                          console.log("입력한 아이디:", e.target.value);
                         }}
                         placeholder="아이디를 입력하세요"
                         className="pl-12 border border-[0.5px] border-brown rounded-[12px] w-full h-[65px] placeholder-gray-300 placeholder:text-[20px] placeholder:font-normal"
@@ -138,7 +172,6 @@ export const Signup = () => {
                         value={isPassword}
                         onChange={(e) => {
                           setIsPassword(e.target.value);
-                          console.log("입력한 비밀번호 : ", e.target.value);
                         }}
                         placeholder="비밀번호를 입력하세요"
                         className="pl-12 border border-[0.5px] border-brown rounded-[12px] w-full h-[65px] placeholder-gray-300 placeholder:text-[20px] placeholder:font-normal"
