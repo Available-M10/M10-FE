@@ -20,37 +20,49 @@ import { Button } from "@/components/ui/button";
 import { createProject } from "./api/createProject";
 import { updateProject } from "./api/updateProject";
 import { deleteProject } from "./api/deleteProject";
+import { getProject } from "./api/getProject";
+
+interface Project {
+  id: number;
+  title: string;
+  status: "활성" | "비활성";
+  description: string;
+}
 
 export const MainPage = () => {
-  // 상태 선언
-  const [projects, setProjects] = useState([
-    {
-      id: 1,
-      title: "이메일 자동화",
-      status: "활성",
-      description: "신규 고객에게 환영 이메일을 자동으로 발송합니다.",
-    },
-    {
-      id: 2,
-      title: "딥솔림 자동화",
-      status: "활성",
-      description: "신규 고객에게 환영 이메일을 자동으로 발송합니다.",
-    },
-  ]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [openModal, setOpenModal] = useState<"trash" | "edit" | "plus" | null>(
     null
   );
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  useEffect(() => {}, []);
+  // 프로젝트 조회
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const data = await getProject();
+        setProjects(
+          data.map((p: { id: number; name: string; active: boolean }) => ({
+            id: p.id,
+            title: p.name,
+            status: p.active ? "활성" : "비활성",
+            description: "설명 없음",
+          }))
+        );
+      } catch (err) {
+        console.error(err);
+        alert("프로젝트 조회 중 오류가 발생했습니다.");
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   // 프로젝트 생성
   const handleAddProject = async () => {
-    if (!inputValue.trim()) {
-      alert("프로젝트명을 입력해주세요.");
-      return;
-    }
+    if (!inputValue.trim()) return alert("프로젝트명을 입력해주세요.");
+
     try {
       const newProject = await createProject(inputValue);
       setProjects([
@@ -71,66 +83,38 @@ export const MainPage = () => {
   };
 
   // 프로젝트 수정
-
-  const handleEditProject = async () => {
-    if (!inputValue.trim() || selectedId === null) {
-      alert("프로젝트명을 입력해주세요.");
-      return;
-    }
-
+  const handleEditProject = async (id: number, newName: string) => {
+    if (!newName.trim()) return alert("프로젝트명을 입력해주세요.");
     try {
-      const result = await updateProject(selectedId, inputValue);
-
-      setProjects(
-        projects.map((p) =>
-          p.id === selectedId ? { ...p, title: inputValue } : p
-        )
+      const updated = await updateProject(id, newName);
+      setProjects((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, title: updated.name } : p))
       );
       setInputValue("");
       setSelectedId(null);
       setOpenModal(null);
-
-      alert(`프로젝트 수정 성공!\n수정된 이름: ${result.name || inputValue}`);
-    } catch (error: any) {
-      console.error(error);
-
-      let message = "알 수 없는 오류";
-      if (error.response) {
-        switch (error.response.status) {
-          case 400:
-            message = "유효하지 않은 요청입니다.";
-            break;
-          case 401:
-            message = "로그인되지 않은 사용자입니다.";
-            break;
-          case 403:
-            message = "권한이 없습니다.";
-            break;
-          case 404:
-            message = "요청한 정보가 존재하지 않습니다.";
-            break;
-          case 409:
-            message = "허용되지 않는 요청입니다.";
-            break;
-          case 500:
-            message = "서버 오류입니다. 백엔드에 문의하세요.";
-            break;
-        }
-      }
-      alert(`프로젝트 수정 실패\n${message}`);
+      alert("프로젝트가 수정되었습니다.");
+    } catch (err) {
+      console.error("프로젝트 수정 실패:", err);
+      alert("프로젝트 수정 중 오류가 발생했습니다.");
     }
   };
 
   // 프로젝트 삭제
   const handleDeleteProject = async () => {
     if (selectedId === null) return;
+
     try {
       await deleteProject(selectedId);
       setProjects((prev) => prev.filter((p) => p.id !== selectedId));
       setSelectedId(null);
       setOpenModal(null);
+      alert("프로젝트가 삭제되었습니다.");
     } catch (error: any) {
-      alert("프로젝트 삭제 중 오류가 발생했습니다.");
+      console.error("프로젝트 삭제 실패:", error.response?.data || error);
+      alert(
+        error.response?.data?.message || "프로젝트 삭제 중 오류가 발생했습니다."
+      );
     }
   };
 
@@ -192,16 +176,16 @@ export const MainPage = () => {
               key={p.id}
               title={p.title}
               status={p.status}
-              statusColor="green"
+              statusColor={p.status === "활성" ? "green" : "red"}
               description={p.description}
               onTrash={() => {
-                setOpenModal("trash");
                 setSelectedId(p.id);
+                setOpenModal("trash");
               }}
               onEdit={() => {
-                setOpenModal("edit");
                 setSelectedId(p.id);
                 setInputValue(p.title);
+                setOpenModal("edit");
               }}
             />
           ))}
@@ -222,7 +206,6 @@ export const MainPage = () => {
       {/* 다이얼로그 */}
       <Dialog open={!!openModal} onOpenChange={() => setOpenModal(null)}>
         <DialogContent className="sm:max-w-[500px] rounded-[20px] bg-white p-8 text-center gap-6">
-          {/* 삭제 */}
           {openModal === "trash" && (
             <>
               <img src={Delete} className="w-[70px] h-[70px] mx-auto" alt="" />
@@ -243,7 +226,6 @@ export const MainPage = () => {
             </>
           )}
 
-          {/* 수정 */}
           {openModal === "edit" && (
             <>
               <img src={Target} className="w-[70px] h-[70px] mx-auto" alt="" />
@@ -270,7 +252,10 @@ export const MainPage = () => {
               <div className="flex gap-4 mt-6 justify-center">
                 <Button
                   className="w-[120px] h-[45px] rounded-[15px] bg-main-300 text-[20px] text-white"
-                  onClick={handleEditProject}
+                  onClick={() =>
+                    selectedId !== null &&
+                    handleEditProject(selectedId, inputValue)
+                  }
                 >
                   저장
                 </Button>
@@ -278,7 +263,6 @@ export const MainPage = () => {
             </>
           )}
 
-          {/* 생성 */}
           {openModal === "plus" && (
             <>
               <img src={Target} className="w-[70px] h-[70px] mx-auto" alt="" />
@@ -318,7 +302,7 @@ export const MainPage = () => {
   );
 };
 
-// 프로젝트 카드 컴포넌트
+// 프로젝트 카드
 const ProjectCard = ({
   title,
   status,

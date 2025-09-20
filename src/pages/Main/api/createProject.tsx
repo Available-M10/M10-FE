@@ -11,11 +11,15 @@ export const createProject = async (name: string) => {
     const response = await axios.post(
       `/projects`,
       { name },
-      { headers: { Authorization: `Bearer ${token}` } }
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     return response.data;
   } catch (error: any) {
-    console.error("API 호출 실패:", error.response?.data || error);
+    console.error("프로젝트 생성 실패", error.response?.data || error);
     throw error;
   }
 };
