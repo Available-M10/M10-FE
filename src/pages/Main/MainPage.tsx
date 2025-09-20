@@ -81,15 +81,15 @@ export const MainPage = () => {
       alert("프로젝트 생성 중 오류가 발생했습니다.");
     }
   };
-
-  // 프로젝트 수정
   const handleEditProject = async (id: number, newName: string) => {
     if (!newName.trim()) return alert("프로젝트명을 입력해주세요.");
+
     try {
-      const updated = await updateProject(id, newName);
+      await updateProject(id, newName);
       setProjects((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, title: updated.name } : p))
+        prev.map((p) => (p.id === id ? { ...p, title: newName.trim() } : p))
       );
+
       setInputValue("");
       setSelectedId(null);
       setOpenModal(null);
