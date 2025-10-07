@@ -7,6 +7,10 @@ type ProjectContextType = {
   setNodes: React.Dispatch<React.SetStateAction<Node[]>>;
   edges: Edge[];
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
+  messages: { role: string; message: string }[];
+  setMessages: React.Dispatch<
+    React.SetStateAction<{ role: string; message: string }[]>
+  >;
 };
 
 const FLowContext = createContext<ProjectContextType | undefined>(undefined);
@@ -60,8 +64,14 @@ export function FlowProvider({ children }: { children: ReactNode }) {
     });
   });
 
+  const [messages, setMessages] = useState<{ role: string; message: string }[]>(
+    []
+  );
+
   return (
-    <FLowContext.Provider value={{ nodes, setNodes, edges, setEdges }}>
+    <FLowContext.Provider
+      value={{ nodes, setNodes, edges, setEdges, messages, setMessages }}
+    >
       {children}
     </FLowContext.Provider>
   );
