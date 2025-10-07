@@ -1,17 +1,38 @@
+import { useState } from "react";
 import iconUp from "@/assets/icon-arrow_up.svg";
 
-export function ChatInput() {
+interface ChatInputProps {
+  onSendMessage: (message: string) => void;
+}
+
+export function ChatInput({ onSendMessage }: ChatInputProps) {
+  const [message, setMessage] = useState("");
+
+  const handleSend = () => {
+    if (!message.trim()) return;
+    onSendMessage(message);
+    setMessage("");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") handleSend();
+  };
+
   return (
-    <div className="h-[calc(100%-10%)] relative p-4 flex items-end">
+    <div className="relative p-4 flex items-end">
       <input
         type="text"
         placeholder="메세지를 입력하세요"
-        className="w-full h-[10%] border rounded border-gray-250 px-3"
+        className="w-full border rounded border-gray-250 px-3 py-2"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
-      <div className="h-[7%] absolute top-[calc(100%-11%)] left-[calc(100%-18%)] z-10 bg-white px-2 py-1 rounded">
-        <div className="h-full bg-[#FF7D68] rounded-full aspect-square flex items-center justify-center ">
-          <img src={iconUp} className="h-[60%]" />
-        </div>
+      <div
+        className="absolute right-6 bottom-6 bg-[#FF7D68] rounded-full aspect-square flex items-center justify-center cursor-pointer"
+        onClick={handleSend}
+      >
+        <img src={iconUp} className="h-3/5" />
       </div>
     </div>
   );
