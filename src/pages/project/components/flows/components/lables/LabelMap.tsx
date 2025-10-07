@@ -22,15 +22,8 @@ const MainStyle: React.CSSProperties = {
   border: "1px solid #E1E5E9",
 };
 
-const EndStyle: React.CSSProperties = {
-  width: "3%",
-  borderTopRightRadius: "50%",
-  borderBottomRightRadius: "50%",
-  border: "1px solid #E1E5E9",
-};
-
 export const labelMap: Record<
-  "시작-first" | "시작-second" | "본론-first" | "본론-second" | "종료-default",
+  "시작-first" | "시작-second" | "본론-first" | "본론-second",
   nodeConfig
 > = {
   "시작-first": {
@@ -46,5 +39,4 @@ export const labelMap: Record<
     label: <MainSecondLabel />,
     style: { ...MainStyle, width: "4%" },
   },
-  "종료-default": { label: <EndLabel />, style: EndStyle },
 };
