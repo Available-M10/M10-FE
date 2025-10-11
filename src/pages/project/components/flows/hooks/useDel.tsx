@@ -1,28 +1,29 @@
 import { useFlow } from "@/pages/project/context/FlowContext";
-import { useReactFlow } from "@xyflow/react";
+import type { NodeChange } from "@xyflow/react";
+import { applyNodeChanges } from "@xyflow/react";
+import { delNodes } from "@/pages/project/apis/delNodes";
+import type { projectIdProps } from "@/pages/project/types/projectId";
 
-export function useDel() {
-  const { nodes, edges, setNodes, setEdges } = useFlow();
-  const reactFlow = useReactFlow();
+export function useDel({ projectId }: projectIdProps) {
+  const { setNodes } = useFlow();
 
-  const handleDeleteSelected = () => {
-    const selectedNodes = reactFlow.getNodes().filter((node) => node.selected);
-    const idsToDelete = selectedNodes.map((n) => n.id);
-    if (!idsToDelete.length) return;
+  const onNodesChange = (changes: NodeChange[]) => {
+    setNodes((prevNodes) => {
+      const newNodes = applyNodeChanges(changes, prevNodes);
 
-    reactFlow.deleteElements({ nodes: selectedNodes });
+      const deletedNodes = prevNodes.filter(
+        (n) => !newNodes.find((nn) => nn.id === n.id)
+      );
 
-    const updatedNodes = nodes.filter((n) => !idsToDelete.includes(n.id));
-    const updatedEdges = edges.filter(
-      (e) => !idsToDelete.includes(e.source) && !idsToDelete.includes(e.target)
-    );
+      if (deletedNodes) {
+        delNodes(projectId)
+          .then(() => console.log("삭제 성공"))
+          .catch(() => "삭제 실패");
+      }
 
-    setNodes(updatedNodes);
-    setEdges(updatedEdges);
-
-    // localStorage.setItem("nodes", JSON.stringify(updatedNodes));
-    // localStorage.setItem("edges", JSON.stringify(updatedEdges));
+      return newNodes;
+    });
   };
 
-  return { handleDeleteSelected };
+  return { onNodesChange };
 }
