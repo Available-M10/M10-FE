@@ -1,23 +1,20 @@
-import { useFlow } from "@/pages/project/context/FlowContext";
 import { useCallback } from "react";
 import { applyEdgeChanges, addEdge } from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
+import { useFlow } from "@/pages/project/context/FlowContext";
 
 export function useEdge() {
   const { edges, setEdges } = useFlow();
 
   const onEdgesChange = useCallback(
-    (changes) =>
-      setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
-    []
+    (changes) => setEdges((prev) => applyEdgeChanges(changes, prev)),
+    [setEdges]
   );
 
   const onConnect = useCallback(
-    (params) =>
-      setEdges((edgesSnapshot) =>
-        addEdge({ ...params, type: "default" }, edgesSnapshot)
-      ),
-    []
+    (params) => {
+      setEdges((prev) => addEdge({ ...params, type: "default" }, prev));
+    },
+    [setEdges]
   );
 
   return { edges, setEdges, onEdgesChange, onConnect };
