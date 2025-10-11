@@ -10,7 +10,6 @@ export function NodeSide() {
       <div className="flex border-b justify-around items-center w-full p-2">
         <SectionTabs label="시작" onClick={() => setActiveTab("시작")} />
         <SectionTabs label="본론" onClick={() => setActiveTab("본론")} />
-        <SectionTabs label="종료" onClick={() => setActiveTab("종료")} />
       </div>
       <div className="p-[7%] flex flex-col gap-5">
         <SideActions activeTab={activeTab} />
