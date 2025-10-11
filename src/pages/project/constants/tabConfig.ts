@@ -1,7 +1,6 @@
 // src/constants/tabConfig.ts
 import iconCilck from "@/assets/icon-click.svg";
 import iconAiagent from "@/assets/icon-Aiagent.svg";
-import iconEnd from "@/assets/icon-end.svg";
 import iconNote from "@/assets/icon-note-side.svg";
 import iconChat from "@/assets/icon-chat-side.svg";
 
@@ -19,9 +18,5 @@ export const tabConfig: Record<
   본론: {
     first: { icon: iconAiagent, text: "Ai Agent" },
     second: { icon: iconNote, text: "노트 작업" },
-  },
-  종료: {
-    first: { icon: iconEnd, text: "프로젝트 종료" },
-    second: { icon: "", text: "" },
   },
 };
