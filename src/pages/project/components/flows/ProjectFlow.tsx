@@ -1,25 +1,31 @@
 import { ReactFlow, Background, Controls } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useNode } from "@/pages/project/components/flows/hooks/useNode";
-import { useEdge } from "@/pages/project/components/flows/hooks/useEdge";
 import { CustomNode } from "./components/CustomNode";
 import { useFlow } from "../../context/FlowContext";
 import { useEffect } from "react";
+import { checkNode } from "../../apis/checkNodes";
+import type { projectIdProps } from "../../types/projectId";
+import { transformApiNodes } from "../../utils/transformApiNodes";
+import { useEdge } from "./hooks/useEdge";
 import { useDel } from "./hooks/useDel";
 
-export function ProjectFlow() {
-  const { onNodesChange } = useNode([]);
+export function ProjectFlow({ projectId }: projectIdProps) {
+  const { nodes, edges, setNodes } = useFlow();
   const { onEdgesChange, onConnect } = useEdge([]);
-  const { nodes, edges } = useFlow();
+  const { onNodesChange } = useDel([]);
 
-  const { handleDeleteSelected } = useDel();
   useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Delete") handleDeleteSelected();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+    async function loadNodes() {
+      try {
+        const apiNodes = await checkNode(projectId);
+        const transformed = transformApiNodes(apiNodes);
+        setNodes(transformed);
+      } catch (error) {
+        console.error("Node 로드 실패:", error);
+      }
+    }
+    if (projectId) loadNodes();
+  }, [projectId, setNodes]);
 
   return (
     <div className="w-full h-full">
@@ -31,9 +37,6 @@ export function ProjectFlow() {
         onConnect={onConnect}
         nodeTypes={{ custom: CustomNode }}
         fitView
-        onKeyDown={(e) => {
-          if (e.key === "Delete") handleDeleteSelected();
-        }}
       >
         <Background />
         <Controls />
