@@ -1,5 +1,9 @@
 import { tabConfig } from "../../constants/tabConfig";
 import { useAddNode } from "../flows/hooks/useAddNode";
+import { useNode } from "../../context/NodeContext";
+import { useLLM } from "../../context/LLMContext";
+import { ActionButton } from "./ActionButton";
+import { NodeHandlers } from "../hooks/useNodeHandlers";
 
 type SideActionsProps = {
   activeTab: string;
@@ -7,35 +11,33 @@ type SideActionsProps = {
 
 export function SideActions({ activeTab }: SideActionsProps) {
   const { addNode } = useAddNode({ activeTab });
-
-  const buttonNode = "flex items-center gap-5";
-  const iconClass = "w-[7%]";
+  const { setNodePort, getNodePort } = useNode();
+  const { prompt } = useLLM();
 
   const current = tabConfig[activeTab];
+  const handlers = NodeHandlers({ getNodePort, setNodePort, prompt });
 
   return (
     <>
-      <div
-        className={buttonNode}
-        onClick={() => {
+      <ActionButton
+        icon={current.first.icon}
+        text={current.first.text}
+        onClick={async () => {
+          if (activeTab === "본론") await handlers.handleCreateLLMNode();
+          else console.log("시작 버튼 생성");
           addNode("first");
         }}
-      >
-        <img src={current.first.icon} className={`${iconClass}`} />
-        <div>{current.first.text}</div>
-      </div>
-      <div
-        className={buttonNode}
-        onClick={() => {
+      />
+
+      <ActionButton
+        icon={current.second.icon}
+        text={current.second.text}
+        onClick={async () => {
+          if (activeTab === "시작") await handlers.handleCreateChatNode();
+          else if (activeTab === "본론") await handlers.handleNoteClick();
           addNode("second");
         }}
-      >
-        <img
-          src={current.second.icon || undefined}
-          className={`${iconClass}`}
-        />
-        <div>{current.second.text}</div>
-      </div>
+      />
     </>
   );
 }
