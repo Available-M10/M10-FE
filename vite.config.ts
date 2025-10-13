@@ -19,6 +19,11 @@ export default ({ mode }: { mode: string }) => {
           changeOrigin: true,
           secure: false,
         },
+        "/projects": {
+          target: env.VITE_BASE_URL,
+          changeOrigin: true,
+          secure: false,
+        },
       },
     },
   });

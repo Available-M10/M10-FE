@@ -27,7 +27,7 @@ module.exports = {
         // ETC
         black: "#000000",
         red: "#FF1F1F",
-        green: "#FF4646",
+        green: "#16A34A",
         brown: "rgba(138,112,73,0.8)",
         white: "#FFFFFF",
       },
