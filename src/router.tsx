@@ -1,8 +1,14 @@
 import { createBrowserRouter } from "react-router-dom";
+import { Login } from "@/pages/Auth/Login";
+import { Signup } from "@/pages/Auth/Signup";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    element: <></>, //페이지 개발하면 나중에 추가
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
   },
 ]);
