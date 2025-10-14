@@ -21,7 +21,7 @@ import { createProject } from "./api/createProject";
 import { updateProject } from "./api/updateProject";
 import { deleteProject } from "./api/deleteProject";
 import { getProject } from "./api/getProject";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 interface Project {
   id: number;
