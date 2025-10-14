@@ -21,6 +21,7 @@ import { createProject } from "./api/createProject";
 import { updateProject } from "./api/updateProject";
 import { deleteProject } from "./api/deleteProject";
 import { getProject } from "./api/getProject";
+import { useNavigate } from "react-router";
 
 interface Project {
   id: number;
@@ -30,6 +31,7 @@ interface Project {
 }
 
 export const MainPage = () => {
+  const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [openModal, setOpenModal] = useState<"trash" | "edit" | "plus" | null>(
@@ -81,6 +83,7 @@ export const MainPage = () => {
       alert("프로젝트 생성 중 오류가 발생했습니다.");
     }
   };
+
   const handleEditProject = async (id: number, newName: string) => {
     if (!newName.trim()) return alert("프로젝트명을 입력해주세요.");
 
@@ -178,15 +181,18 @@ export const MainPage = () => {
               status={p.status}
               statusColor={p.status === "활성" ? "green" : "red"}
               description={p.description}
-              onTrash={() => {
+              onTrash={(e) => {
+                e.stopPropagation();
                 setSelectedId(p.id);
                 setOpenModal("trash");
               }}
-              onEdit={() => {
+              onEdit={(e) => {
+                e.stopPropagation();
                 setSelectedId(p.id);
                 setInputValue(p.title);
                 setOpenModal("edit");
               }}
+              onClick={() => navigate(`/project/${p.id}`)}
             />
           ))}
         </div>
@@ -310,13 +316,15 @@ const ProjectCard = ({
   description,
   onTrash,
   onEdit,
+  onClick,
 }: {
   title: string;
   status: string;
   statusColor: string;
   description: string;
-  onTrash: () => void;
-  onEdit: () => void;
+  onTrash: (e: React.MouseEvent) => void;
+  onEdit: (e: React.MouseEvent) => void;
+  onClick: () => void;
 }) => {
   const getStatusBadgeStyle = (color: string) => {
     switch (color) {
@@ -330,7 +338,10 @@ const ProjectCard = ({
   };
 
   return (
-    <div className="bg-white w-full h-[163px] rounded-[20px] border border-gray-200 shadow-sm hover:shadow-md">
+    <div
+      className="bg-white w-full h-[163px] rounded-[20px] border border-gray-200 shadow-sm hover:shadow-md cursor-pointer"
+      onClick={onClick}
+    >
       <div className="flex flex-col justify-center h-full px-6">
         <div className="flex items-center justify-between w-full mb-2">
           <div className="flex items-center gap-3">
