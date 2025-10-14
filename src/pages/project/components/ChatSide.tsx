@@ -4,7 +4,7 @@ import { ChatInput } from "./ui/ChatInput";
 import { ChatMessages } from "./ui/ChatMessages";
 import { useFlow } from "../context/FlowContext";
 import { createChatTrigger } from "../apis/createChatTrigger";
-import type { projectIdProps } from "../types/projectId";
+import type { projectIdProps } from "../../../context/hooks/projectId";
 import { useNode } from "../context/NodeContext";
 
 export function ChatSide({ projectId }: projectIdProps) {

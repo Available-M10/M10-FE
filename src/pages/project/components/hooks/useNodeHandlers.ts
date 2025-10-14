@@ -1,4 +1,3 @@
-import type { projectIdProps } from "../../types/projectId";
 import { createChatNode } from "../../apis/createChatNode";
 import { createLLMNode } from "../../apis/createLLMNode";
 import { createNoteNode } from "../../apis/createNoteNode";
@@ -13,10 +12,12 @@ type NodeHandlersProps = {
   projectId: string;
 };
 
-export const NodeHandlers = (
-  { getNodePort, setNodePort, prompt }: NodeHandlersProps,
-  { projectId }: projectIdProps
-) => {
+export const NodeHandlers = ({
+  getNodePort,
+  setNodePort,
+  prompt,
+  projectId,
+}: NodeHandlersProps) => {
   const handleCreateChatNode = async () => {
     try {
       const node = await createChatNode(projectId);

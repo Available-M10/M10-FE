@@ -4,15 +4,16 @@ import { CustomNode } from "./components/CustomNode";
 import { useFlow } from "../../context/FlowContext";
 import { useEffect } from "react";
 import { checkNode } from "../../apis/checkNodes";
-import type { projectIdProps } from "../../types/projectId";
+import { useProjectId } from "@/context/hooks/projectId";
 import { transformApiNodes } from "../../utils/transformApiNodes";
 import { useEdge } from "./hooks/useEdge";
 import { useDel } from "./hooks/useDel";
 
-export function ProjectFlow({ projectId }: projectIdProps) {
+export function ProjectFlow() {
   const { nodes, edges, setNodes } = useFlow();
   const { onEdgesChange, onConnect } = useEdge([]);
   const { onNodesChange } = useDel([]);
+  const { projectId } = useProjectId();
 
   useEffect(() => {
     async function loadNodes() {

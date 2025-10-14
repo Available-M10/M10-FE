@@ -5,18 +5,19 @@ import { useProject } from "../../context/ProjectContext";
 import { NodeHandlers } from "../hooks/useNodeHandlers";
 import { useLLM } from "../../context/LLMContext";
 import { useNode } from "../flows/hooks/useNode";
-import type { projectIdProps } from "../../types/projectId";
+import { useProjectId } from "@/context/hooks/projectId";
 
-export function ProjectHead({ projectId }: projectIdProps) {
+export function ProjectHead() {
   const { setSide } = useProject();
   const { prompt } = useLLM();
   const { getNodePort, setNodePort } = useNode();
+  const { projectId } = useProjectId();
 
   const { handleNoteClick } = NodeHandlers({
     getNodePort,
     setNodePort,
     prompt,
-    // projectId
+    projectId,
   });
   return (
     <div className="h-[10%] border-b border-gray-250 flex justify-between px-5 text-xs">

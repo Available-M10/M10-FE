@@ -2,7 +2,7 @@ import { ProjectHead } from "./components/layout/ProjectHead";
 import { ProjectSide } from "./components/layout/ProjectSide";
 import { ProjectFlow } from "./components/flows/ProjectFlow";
 import { Wrapper } from "./context/Wrapper";
-import type { projectIdProps } from "./types/projectId";
+import type { projectIdProps } from "../../context/hooks/projectId";
 
 export function ProjectPage({ projectId }: projectIdProps) {
   return (
