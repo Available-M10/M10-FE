@@ -2,7 +2,7 @@ import { createContext, useContext, ReactNode } from "react";
 import { useParams } from "react-router-dom";
 
 interface ProjectContextType {
-  projectId: string | undefined;
+  projectId: string;
 }
 
 const ProjectContext = createContext<ProjectContextType | null>(null);

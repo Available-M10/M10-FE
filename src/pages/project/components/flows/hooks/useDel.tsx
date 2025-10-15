@@ -2,11 +2,12 @@ import { useFlow } from "@/pages/project/context/FlowContext";
 import type { NodeChange } from "@xyflow/react";
 import { applyNodeChanges } from "@xyflow/react";
 import { delNodes } from "@/pages/project/apis/delNodes";
-import type { projectIdProps } from "@/context/hooks/projectId";
+import { useProjectId } from "@/context/hooks/projectId";
 
-export function useDel({ projectId }: projectIdProps) {
+export function useDel() {
   const { setNodes } = useFlow();
-
+  const {projectId } = useProjectId()
+ 
   const onNodesChange = (changes: NodeChange[]) => {
     setNodes((prevNodes) => {
       const newNodes = applyNodeChanges(changes, prevNodes);

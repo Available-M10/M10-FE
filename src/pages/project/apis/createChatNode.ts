@@ -1,6 +1,14 @@
 import { api } from "./axios";
+import axios from "axios";
 
 export async function createChatNode(projectId: string) {
-  const res = await api.post(`/node/${projectId}/start/chat`);
-  return res.data;
+  try {
+    const res = await api.post(`/node/${projectId}/start/chat`);
+    return res.data;
+  } catch (e) {
+    if (axios.isAxiosError(e)) {
+      console.log("서버 응답 데이터:", e.response?.data);
+    }
+    console.error("노드 생성 실패:", e);
+  }
 }

@@ -11,7 +11,7 @@ export function CustomNode({ data }) {
         height: 50,
       }}
     >
-      {nodeConfig.label}
+      {nodeConfig?.label}
       {(data.handlePosition === "Right" || data.handlePosition != "Left") && (
         <Handle
           type="source"

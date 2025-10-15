@@ -2,6 +2,7 @@ import { createChatNode } from "../../apis/createChatNode";
 import { createLLMNode } from "../../apis/createLLMNode";
 import { createNoteNode } from "../../apis/createNoteNode";
 import { getPresignedUrl, uploadPdfToS3 } from "../../apis/files";
+import { useProjectId } from "@/context/hooks/projectId";
 
 type NodeHandlersProps = {
   getNodePort: (
@@ -9,15 +10,15 @@ type NodeHandlersProps = {
   ) => { nodeId: string; outPortId: string } | undefined;
   setNodePort: (type: string, nodeId: string, outPortId: string) => void;
   prompt: string;
-  projectId: string;
 };
 
 export const NodeHandlers = ({
   getNodePort,
   setNodePort,
   prompt,
-  projectId,
 }: NodeHandlersProps) => {
+  const { projectId } = useProjectId();
+  console.log(projectId, "projectId");
   const handleCreateChatNode = async () => {
     try {
       const node = await createChatNode(projectId);
@@ -32,10 +33,7 @@ export const NodeHandlers = ({
     }
   };
 
-  const handleCreateNote = async (
-    file: File,
-    { projectId }: projectIdProps
-  ) => {
+  const handleCreateNote = async (file: File) => {
     try {
       const { object_key, presigned_url } = await getPresignedUrl(file.name);
       await uploadPdfToS3(presigned_url, file);
@@ -56,7 +54,7 @@ export const NodeHandlers = ({
     }
   };
 
-  const handleUploadPdf = async (file: File, { projectId }: projectIdProps) => {
+  const handleUploadPdf = async (file: File) => {
     const noteNodeInfo = getNodePort("NOTE");
     if (!noteNodeInfo) return console.log("Note Node 포트 정보가 없습니다.");
 
@@ -70,9 +68,16 @@ export const NodeHandlers = ({
     }
   };
 
-  const handleCreateLLMNode = async ({ projectId }: projectIdProps) => {
+  const handleCreateLLMNode = async () => {
     try {
       const chatNodeInfo = getNodePort("CHAT");
+      console.log(
+        "LLM 생성 시도:",
+        projectId,
+        chatNodeInfo?.nodeId,
+        chatNodeInfo?.outPortId,
+        prompt
+      );
       if (!chatNodeInfo) return console.log("Chat 노드 정보가 없습니다.");
 
       const node = await createLLMNode(
@@ -101,7 +106,7 @@ export const NodeHandlers = ({
       fileInput.accept = "application/pdf";
       fileInput.onchange = async (e: any) => {
         const file = e.target.files[0];
-        if (file) await handleCreateNote(file, { projectId });
+        if (file) await handleCreateNote(file);
       };
       fileInput.click();
       return;
@@ -113,7 +118,7 @@ export const NodeHandlers = ({
     fileInput.accept = "application/pdf";
     fileInput.onchange = async (e: any) => {
       const file = e.target.files[0];
-      if (file) await handleUploadPdf(file, { projectId });
+      if (file) await handleUploadPdf(file);
     };
     fileInput.click();
   };
