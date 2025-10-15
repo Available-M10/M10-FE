@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
-import { Login } from "@/pages/Auth/Login";
+import Login from "./pages/Auth/Login";
 import { Signup } from "@/pages/Auth/Signup";
-import { MainPage } from "./pages/Main/MainPage";
+import MainPage from "./pages/Main/MainPage";
 import { ProjectProvider } from "./context/hooks/projectId";
 import { ProjectPage } from "./pages/project/ProjectPage";
 
