@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import type React from "react";
+import { useState, useEffect } from "react";
 import LeftArrow from "@/assets/icon-left_arrow.svg";
 import RightArrow from "@/assets/icon-right_arrow.svg";
 import Plus from "@/assets/icon-plus.svg";
@@ -30,20 +31,34 @@ interface Project {
   description: string;
 }
 
-export const MainPage = () => {
+const MainPage = () => {
   const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [inputValue, setInputValue] = useState("");
   const [openModal, setOpenModal] = useState<"trash" | "edit" | "plus" | null>(
     null
   );
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  // 프로젝트 조회
   useEffect(() => {
     const fetchProjects = async () => {
       try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          setProjects([]);
+          setIsLoading(false);
+          alert("로그인이 필요합니다.");
+          navigate("/");
+          return;
+        }
+
+        setIsLoading(true);
+        setProjects([]);
+
         const data = await getProject();
+        console.log(" 받아온 프로젝트 데이터:", data);
+
         setProjects(
           data.map((p: { id: number; name: string; active: boolean }) => ({
             id: p.id,
@@ -52,16 +67,31 @@ export const MainPage = () => {
             description: "설명 없음",
           }))
         );
-      } catch (err) {
+      } catch (err: any) {
         console.error(err);
-        alert("프로젝트 조회 중 오류가 발생했습니다.");
+
+        setProjects([]);
+
+        if (err.response?.status === 401) {
+          alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          navigate("/");
+        } else {
+          alert("프로젝트 조회 중 오류가 발생했습니다.");
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchProjects();
-  }, []);
+    const timer = setTimeout(() => {
+      fetchProjects();
+    }, 150);
 
-  // 프로젝트 생성
+    return () => clearTimeout(timer);
+  }, [navigate]);
+
   const handleAddProject = async () => {
     if (!inputValue.trim()) return alert("프로젝트명을 입력해주세요.");
 
@@ -103,7 +133,6 @@ export const MainPage = () => {
     }
   };
 
-  // 프로젝트 삭제
   const handleDeleteProject = async () => {
     if (selectedId === null) return;
 
@@ -128,10 +157,10 @@ export const MainPage = () => {
       {/* 배너 */}
       <div className="relative bg-main-200 px-8 py-16 overflow-visible">
         <button className="absolute left-[60px] top-1/2 transform -translate-y-1/2 z-10">
-          <img src={LeftArrow} alt="icon-leftArrow" />
+          <img src={LeftArrow || "/placeholder.svg"} alt="icon-leftArrow" />
         </button>
         <button className="absolute right-[60px] top-1/2 transform -translate-y-1/2 z-10">
-          <img src={RightArrow} alt="icon-rightArrow" />
+          <img src={RightArrow || "/placeholder.svg"} alt="icon-rightArrow" />
         </button>
 
         <div className="max-w-6xl mx-auto flex items-center justify-between">
@@ -151,14 +180,14 @@ export const MainPage = () => {
             <div className="flex gap-3 h-full">
               <div className="overflow-hidden w-24 h-full">
                 <img
-                  src={Delete}
+                  src={Delete || "/placeholder.svg"}
                   alt="sample-2"
                   className="w-full h-full object-contain"
                 />
               </div>
               <div className="overflow-hidden w-24 h-full">
                 <img
-                  src={Smile}
+                  src={Smile || "/placeholder.svg"}
                   alt="sample-3"
                   className="w-full h-full object-contain"
                 />
@@ -168,34 +197,47 @@ export const MainPage = () => {
         </div>
       </div>
 
-      {/* 프로젝트 목록 */}
       <div className="max-w-6xl mx-auto px-8 py-16">
         <h2 className="text-[35px] font-semibold text-gray-400 mb-8">
           프로젝트 목록
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-[39px]">
-          {projects.map((p) => (
-            <ProjectCard
-              key={p.id}
-              title={p.title}
-              status={p.status}
-              statusColor={p.status === "활성" ? "green" : "red"}
-              description={p.description}
-              onTrash={(e) => {
-                e.stopPropagation();
-                setSelectedId(p.id);
-                setOpenModal("trash");
-              }}
-              onEdit={(e) => {
-                e.stopPropagation();
-                setSelectedId(p.id);
-                setInputValue(p.title);
-                setOpenModal("edit");
-              }}
-              onClick={() => navigate(`/project/${p.id}`)}
-            />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <p className="text-[20px] text-gray-400">
+              프로젝트를 불러오는 중...
+            </p>
+          </div>
+        ) : projects.length === 0 ? (
+          <div className="flex justify-center items-center py-20">
+            <p className="text-[20px] text-gray-400">
+              아직 프로젝트가 없습니다. 새 프로젝트를 만들어보세요!
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-[39px]">
+            {projects.map((p) => (
+              <ProjectCard
+                key={p.id}
+                title={p.title}
+                status={p.status}
+                statusColor={p.status === "활성" ? "green" : "red"}
+                description={p.description}
+                onTrash={(e) => {
+                  e.stopPropagation();
+                  setSelectedId(p.id);
+                  setOpenModal("trash");
+                }}
+                onEdit={(e) => {
+                  e.stopPropagation();
+                  setSelectedId(p.id);
+                  setInputValue(p.title);
+                  setOpenModal("edit");
+                }}
+                onClick={() => navigate(`/project/${p.id}`)}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 생성 버튼 */}
@@ -206,7 +248,7 @@ export const MainPage = () => {
           setInputValue("");
         }}
       >
-        <img src={Plus} alt="" />
+        <img src={Plus || "/placeholder.svg"} alt="" />
       </button>
 
       {/* 다이얼로그 */}
@@ -214,7 +256,11 @@ export const MainPage = () => {
         <DialogContent className="sm:max-w-[500px] rounded-[20px] bg-white p-8 text-center gap-6">
           {openModal === "trash" && (
             <>
-              <img src={Delete} className="w-[70px] h-[70px] mx-auto" alt="" />
+              <img
+                src={Delete || "/placeholder.svg"}
+                className="w-[70px] h-[70px] mx-auto"
+                alt=""
+              />
               <DialogTitle className="text-[30px] font-semibold">
                 프로젝트 삭제
               </DialogTitle>
@@ -234,7 +280,11 @@ export const MainPage = () => {
 
           {openModal === "edit" && (
             <>
-              <img src={Target} className="w-[70px] h-[70px] mx-auto" alt="" />
+              <img
+                src={Target || "/placeholder.svg"}
+                className="w-[70px] h-[70px] mx-auto"
+                alt=""
+              />
               <DialogTitle className="text-[25px] font-semibold">
                 프로젝트 정보 수정
               </DialogTitle>
@@ -251,7 +301,7 @@ export const MainPage = () => {
                     className="pl-12 border border-[0.5px] border-brown rounded-[12px] h-[50px]"
                   />
                   <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                    <img src={Note} alt="icon-target" />
+                    <img src={Note || "/placeholder.svg"} alt="icon-target" />
                   </div>
                 </div>
               </div>
@@ -271,7 +321,11 @@ export const MainPage = () => {
 
           {openModal === "plus" && (
             <>
-              <img src={Target} className="w-[70px] h-[70px] mx-auto" alt="" />
+              <img
+                src={Target || "/placeholder.svg"}
+                className="w-[70px] h-[70px] mx-auto"
+                alt=""
+              />
               <DialogTitle className="text-[25px] font-semibold">
                 새 프로젝트 생성
               </DialogTitle>
@@ -288,7 +342,7 @@ export const MainPage = () => {
                     className="pl-12 border border-[0.5px] border-brown rounded-[12px] h-[50px]"
                   />
                   <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                    <img src={Note} alt="icon-target" />
+                    <img src={Note || "/placeholder.svg"} alt="icon-target" />
                   </div>
                 </div>
               </div>
@@ -308,7 +362,6 @@ export const MainPage = () => {
   );
 };
 
-// 프로젝트 카드
 const ProjectCard = ({
   title,
   status,
@@ -356,10 +409,10 @@ const ProjectCard = ({
           </div>
           <div className="flex gap-2">
             <button onClick={onTrash}>
-              <img src={Trash} alt="delete" />
+              <img src={Trash || "/placeholder.svg"} alt="delete" />
             </button>
             <button onClick={onEdit}>
-              <img src={Edit} alt="edit" />
+              <img src={Edit || "/placeholder.svg"} alt="edit" />
             </button>
           </div>
         </div>
@@ -370,3 +423,5 @@ const ProjectCard = ({
     </div>
   );
 };
+
+export default MainPage;

@@ -1,16 +1,8 @@
-import axios from "axios";
-
-const getAccessToken = () => localStorage.getItem("accessToken") || "";
+import axiosInstance from "@/pages/Auth/axiosInstance";
 
 export const getProject = async () => {
   try {
-    const token = getAccessToken();
-    const response = await axios.get("/projects", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
+    const response = await axiosInstance.get("/projects");
     return response.data.map(
       (p: { id: number; name: string; active: boolean }) => ({
         id: p.id,

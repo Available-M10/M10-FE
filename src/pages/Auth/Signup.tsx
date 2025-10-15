@@ -15,11 +15,7 @@ import Lock from "@/assets/icon-lock.svg";
 export const Signup = () => {
   const [isId, setIsId] = useState<string>("");
   const [isPassword, setIsPassword] = useState<string>("");
-
   const navigate = useNavigate();
-  const BASE_URL = import.meta.env.VITE_BASE_URL;
-
-  console.log("BASE_URL:", BASE_URL);
 
   const isIdValid = isId.length >= 3 && isId.length <= 10;
   const isPasswordValid = isPassword.length >= 6;
@@ -44,9 +40,8 @@ export const Signup = () => {
         password: isPassword,
       });
 
-      console.log("회원가입 성공:", response.data);
       alert("회원가입 성공! 로그인 페이지로 이동합니다.");
-      navigate("/login");
+      navigate("/");
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         const status = error.response?.status;
@@ -107,7 +102,7 @@ export const Signup = () => {
             <Tabs defaultValue="signup" className="w-full">
               <TabsList className="w-full max-w-[449px] h-[69px] flex justify-center items-center mx-auto gap-2 rounded-[11px] bg-gray-0 p-2">
                 <div
-                  onClick={() => navigate("/login")}
+                  onClick={() => navigate("/")}
                   className="w-[204px] h-[52px] flex justify-center items-center cursor-pointer rounded-[11px] bg-gray-0 text-gray-600 hover:bg-gray-100 hover:text-black transition-all"
                 >
                   로그인
