@@ -10,10 +10,10 @@ export interface FlowNode {
 }
 
 export function transformApiNodes(apiNodes: any[]): FlowNode[] {
-  return apiNodes.map((n, index) => ({
-    id: String(index + 1),
+  return apiNodes.map((n) => ({
+    id: String(n.node_id),
     type: "custom",
-    position: { x: 0, y: index * 100 }, // 임시 위치
+    position: { x: 0, y: 0 }, // 임시 위치
     data: {
       label: n.name,
       nodeType: n.type,

@@ -8,16 +8,15 @@ export function useDel() {
   const { setNodes } = useFlow();
   const { portInfo } = useProjectId();
 
-  const NodeIdInfo = portInfo.find((n) => n.nodeId);
-  const delNodeId = NodeIdInfo?.nodeId;
-  console.log("portInfo", portInfo);
-  console.log("NodeIdInfo", delNodeId);
-
   const onNodesChange = (changes: NodeChange[]) => {
     const removedNodes = changes.filter((change) => change.type === "remove");
 
     if (removedNodes.length > 0) {
       removedNodes.forEach(() => {
+        const NodeIdInfo = portInfo.find((n) => n.nodeId);
+        const delNodeId = NodeIdInfo?.nodeId;
+        console.log("portInfo", portInfo);
+        console.log("NodeIdInfo", delNodeId);
         delNodes(delNodeId)
           .then(() => console.log(`노드 ${delNodeId} 삭제 성공`))
           .catch(() => console.log(`노드 ${delNodeId} 삭제 실패`));

@@ -12,6 +12,7 @@ interface ProjectContextType {
   nodeData: any[];
   setNodeData: React.Dispatch<React.SetStateAction<any[]>>;
   portInfo: any[];
+  setPortInfo: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const ProjectContext = createContext<ProjectContextType | null>(null);

@@ -9,7 +9,7 @@ type NodeHandlersProps = {
 };
 
 export const NodeHandlers = ({ prompt }: NodeHandlersProps) => {
-  const { projectId, nodeData, portInfo } = useProjectId();
+  const { projectId, nodeData, portInfo, setPortInfo } = useProjectId();
 
   console.log(projectId, "projectId");
 
@@ -23,6 +23,16 @@ export const NodeHandlers = ({ prompt }: NodeHandlersProps) => {
     try {
       const node = await createChatNode(projectId);
       console.log("Chat 노드 생성", node);
+      setPortInfo((prev) => [
+        ...prev,
+        {
+          name: node.name,
+          type: node.type,
+          nodeId: node.node_id,
+          outPortId: node.my_port_id,
+          inPortId: null,
+        },
+      ]);
     } catch (e) {
       console.error(e);
     }
