@@ -4,18 +4,14 @@ import { LogoTitle } from "../ui/LogoTitle";
 import { useProject } from "../../context/ProjectContext";
 import { NodeHandlers } from "../hooks/useNodeHandlers";
 import { useLLM } from "../../context/LLMContext";
-import { useNode } from "../flows/hooks/useNode";
 import { useProjectId } from "@/context/hooks/projectId";
 
 export function ProjectHead() {
   const { setSide } = useProject();
   const { prompt } = useLLM();
-  const { getNodePort, setNodePort } = useNode();
   const { projectId } = useProjectId();
 
   const { handleNoteClick } = NodeHandlers({
-    getNodePort,
-    setNodePort,
     prompt,
     projectId,
   });

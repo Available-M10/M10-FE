@@ -6,24 +6,25 @@ import { useProjectId } from "@/context/hooks/projectId";
 
 export function useDel() {
   const { setNodes } = useFlow();
-  const {projectId } = useProjectId()
- 
+  const { portInfo } = useProjectId();
+
+  const NodeIdInfo = portInfo.find((n) => n.nodeId);
+  const delNodeId = NodeIdInfo?.nodeId;
+  console.log("portInfo", portInfo);
+  console.log("NodeIdInfo", delNodeId);
+
   const onNodesChange = (changes: NodeChange[]) => {
-    setNodes((prevNodes) => {
-      const newNodes = applyNodeChanges(changes, prevNodes);
+    const removedNodes = changes.filter((change) => change.type === "remove");
 
-      const deletedNodes = prevNodes.filter(
-        (n) => !newNodes.find((nn) => nn.id === n.id)
-      );
+    if (removedNodes.length > 0) {
+      removedNodes.forEach(() => {
+        delNodes(delNodeId)
+          .then(() => console.log(`노드 ${delNodeId} 삭제 성공`))
+          .catch(() => console.log(`노드 ${delNodeId} 삭제 실패`));
+      });
+    }
 
-      if (deletedNodes) {
-        delNodes(projectId)
-          .then(() => console.log("삭제 성공"))
-          .catch(() => "삭제 실패");
-      }
-
-      return newNodes;
-    });
+    setNodes((prevNodes) => applyNodeChanges(changes, prevNodes));
   };
 
   return { onNodesChange };

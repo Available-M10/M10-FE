@@ -18,6 +18,7 @@ export function transformApiNodes(apiNodes: any[]): FlowNode[] {
       label: n.name,
       nodeType: n.type,
       ports: n.port,
+      node_id: n.node_id,
     },
   }));
 }

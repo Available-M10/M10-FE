@@ -13,7 +13,7 @@ export function ProjectFlow() {
   const { nodes, edges, setNodes } = useFlow();
   const { onEdgesChange, onConnect } = useEdge([]);
   const { onNodesChange } = useDel([]);
-  const { projectId } = useProjectId();
+  const { projectId, setNodeData } = useProjectId();
 
   useEffect(() => {
     async function loadNodes() {
@@ -21,6 +21,7 @@ export function ProjectFlow() {
         const apiNodes = await checkNode(projectId);
         const transformed = transformApiNodes(apiNodes);
         setNodes(transformed);
+        setNodeData(apiNodes);
       } catch (error) {
         console.error("Node 로드 실패:", error);
       }
