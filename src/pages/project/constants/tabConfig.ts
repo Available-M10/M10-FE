@@ -1,4 +1,3 @@
-// src/constants/tabConfig.ts
 import iconCilck from "@/assets/icon-click.svg";
 import iconAiagent from "@/assets/icon-Aiagent.svg";
 import iconNote from "@/assets/icon-note-side.svg";

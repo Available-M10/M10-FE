@@ -8,7 +8,7 @@ export async function createLLMNode(
 ) {
   const LLMUrl = `/node/${projectId}/last/llm`;
   const url = inPortId ? `${LLMUrl}?linkPortId=${inPortId}` : LLMUrl;
-  
+
   const body = {
     chat_node: chatnode,
     prompt: prompt,

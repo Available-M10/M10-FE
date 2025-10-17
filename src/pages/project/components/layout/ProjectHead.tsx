@@ -11,10 +11,7 @@ export function ProjectHead() {
   const { prompt } = useLLM();
   const { projectId } = useProjectId();
 
-  const { handleNoteClick } = NodeHandlers({
-    prompt,
-    projectId,
-  });
+  const { handleNoteClick } = NodeHandlers();
   return (
     <div className="h-[10%] border-b border-gray-250 flex justify-between px-5 text-xs">
       <LogoTitle />

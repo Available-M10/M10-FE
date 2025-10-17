@@ -1,10 +1,11 @@
 import { ProjectHead } from "./components/layout/ProjectHead";
-import { ProjectSide } from "./components/layout/ProjectSide";
+import { ProjectSide } from "./components/layout/Projectside";
 import { ProjectFlow } from "./components/flows/ProjectFlow";
 import { Wrapper } from "./context/Wrapper";
-import type { projectIdProps } from "../../context/hooks/projectId";
+import { useProjectId } from "@/context/hooks/projectId";
 
-export function ProjectPage({ projectId }: projectIdProps) {
+export function ProjectPage() {
+  const { projectId } = useProjectId();
   return (
     <Wrapper>
       <div className="flex flex-col h-screen">

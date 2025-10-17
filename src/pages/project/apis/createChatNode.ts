@@ -4,6 +4,7 @@ import axios from "axios";
 export async function createChatNode(projectId: string) {
   try {
     const res = await api.post(`/node/${projectId}/start/chat`);
+    console.log("chat 노드 생성")
     return res.data;
   } catch (e) {
     if (axios.isAxiosError(e)) {
