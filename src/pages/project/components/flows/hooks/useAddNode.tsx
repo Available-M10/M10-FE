@@ -10,6 +10,10 @@ export function useAddNode({ activeTab }: SideActionsProps) {
 
   const addNode = (activeType: "first" | "second") => {
     const key = `${activeTab}-${activeType}` as keyof typeof labelMap;
+    if (key === "시작-first") {
+      console.log("⚠️ 시작-first 노드는 추가하지 않습니다.");
+      return;
+    }
     const nodeConfig = labelMap[key];
 
     setNodes((nds) => [

@@ -25,11 +25,12 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   console.log("projectId", portInfo);
 
   useEffect(() => {
-    const newPortInfo = nodeData.map((node) => ({
+    const newPortInfo = nodeData.map((node, index) => ({
       name: node.name,
       type: node.type,
       nodeId: node.port?.[0]?.id,
       outPortId: node.port[0].out_port_id,
+      reactFlowId: String(index + 1),
       inPortId: node.port[0].in_port_id,
     }));
 

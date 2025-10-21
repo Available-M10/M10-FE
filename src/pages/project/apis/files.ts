@@ -15,10 +15,18 @@ export async function getPresignedUrl(fileName: string) {
 
 export async function uploadPdfToS3(presignedUrl: string, file: File) {
   try {
-    const res = await api.put(presignedUrl, file);
+    const res = await fetch(presignedUrl, {
+      method: "PUT",
+      body: file,
+      headers: {
+        "Content-Type": file.type,
+      },
+    });
+    console.log("PDF 업로드 완료!");
+
     return res.status === 200;
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    console.error("PDF 업로드 실패:", err);
     throw err;
   }
 }

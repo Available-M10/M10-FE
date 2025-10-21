@@ -2,16 +2,13 @@ import { IconButton } from "../ui/iconButton";
 import { TextButton } from "../ui/textButton";
 import { LogoTitle } from "../ui/LogoTitle";
 import { useProject } from "../../context/ProjectContext";
-import { NodeHandlers } from "../hooks/useNodeHandlers";
-import { useLLM } from "../../context/LLMContext";
-import { useProjectId } from "@/context/hooks/projectId";
 
 export function ProjectHead() {
   const { setSide } = useProject();
-  const { prompt } = useLLM();
-  const { projectId } = useProjectId();
 
-  const { handleNoteClick } = NodeHandlers();
+  const handlestart = () => {
+    alert("이건 구라 버튼이다 임마");
+  };
   return (
     <div className="h-[10%] border-b border-gray-250 flex justify-between px-5 text-xs">
       <LogoTitle />
@@ -25,7 +22,7 @@ export function ProjectHead() {
           label="실행"
           bgColor="bg-[#FF6D5A]"
           fontColor="text-white"
-          onClick={handleNoteClick}
+          onClick={handlestart}
         />
       </div>
     </div>

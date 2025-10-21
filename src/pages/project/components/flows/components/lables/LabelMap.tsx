@@ -2,7 +2,6 @@ import { StartFirstLabel } from "./StartFirstLabel";
 import { StartSecondLabel } from "./StartSecondLabel";
 import { MainFirstLabel } from "./MainFirstLabel";
 import { MainSecondLabel } from "./MainSecondLabel";
-import { EndLabel } from "./EndLabel";
 import type { JSX } from "react";
 
 export interface nodeConfig {

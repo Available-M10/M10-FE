@@ -1,6 +1,5 @@
 import { tabConfig } from "../../constants/tabConfig";
 import { useAddNode } from "../flows/hooks/useAddNode";
-import { useLLM } from "../../context/LLMContext";
 import { ActionButton } from "./ActionButton";
 import { NodeHandlers } from "../hooks/useNodeHandlers";
 import { useProjectId } from "@/context/hooks/projectId";
@@ -12,11 +11,10 @@ type SideActionsProps = {
 
 export function SideActions({ activeTab }: SideActionsProps) {
   const { addNode } = useAddNode({ activeTab });
-  const { prompt } = useLLM();
   const { portInfo } = useProjectId();
   const current = tabConfig[activeTab];
-  const handlers = NodeHandlers({ prompt });
-
+  const { handleCreateLLMNode, handleCreateChatNode, handleNoteClick } =
+    NodeHandlers();
   useEffect(() => {
     console.log("✅ portInfo 최신 상태:", portInfo);
   }, [portInfo]);
@@ -40,9 +38,9 @@ export function SideActions({ activeTab }: SideActionsProps) {
             }
 
             console.log("✅ Chat 노드가 있으므로 LLM 노드 생성 시작");
-            await handlers.handleCreateLLMNode();
+            await handleCreateLLMNode();
           } else {
-            alert("이거 클릭해도 암것도 없음")
+            alert("이거 클릭해도 암것도 없음");
           }
 
           addNode("first");
@@ -61,9 +59,9 @@ export function SideActions({ activeTab }: SideActionsProps) {
             }
 
             console.log("✅ Chat 노드 생성 시작");
-            await handlers.handleCreateChatNode();
+            await handleCreateChatNode();
           } else if (activeTab === "본론") {
-            await handlers.handleNoteClick();
+            await handleNoteClick();
           }
 
           addNode("second");

@@ -4,7 +4,8 @@ interface ChatMessagesProps {
   messages: Message[];
 }
 
-export function ChatMessages({ messages }: ChatMessagesProps) {
+export function ChatMessages({ messages, role }: ChatMessagesProps) {
+  console.log(role, "");
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-2 flex flex-col">
       {messages.map((msg, idx) => (

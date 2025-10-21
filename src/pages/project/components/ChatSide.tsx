@@ -1,54 +1,60 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ChatHeader } from "./ui/ChatHeader";
 import { ChatInput } from "./ui/ChatInput";
 import { ChatMessages } from "./ui/ChatMessages";
 import { useFlow } from "../context/FlowContext";
 import { createChatTrigger } from "../apis/createChatTrigger";
-import type { projectIdProps } from "../../../context/hooks/projectId";
-import { useNode } from "../context/NodeContext";
+import { useProjectId } from "@/context/hooks/projectId";
+import { useNodeStore } from "../store/useNodeStore";
 
-export function ChatSide({ projectId }: projectIdProps) {
+export function ChatSide() {
+  const { projectId } = useProjectId();
   const { messages, setMessages } = useFlow();
-  const { getNodePort } = useNode();
-  const [chatNodePort, setChatNodePort] = useState<string | null>(null);
-
-  useEffect(() => {
-    const chatNode = getNodePort("CHAT");
-    if (chatNode?.outPortId) {
-      setChatNodePort(chatNode.outPortId);
-      console.log("Chat Node 포트 로드:", chatNode.outPortId);
-    }
-  }, [getNodePort]);
-
+  const [isSending, setIsSending] = useState(false);
+  const { chatNodePort } = useNodeStore();
+  console.log("messages", messages);
   const handleSendMessage = async (message: string) => {
-    if (!message.trim()) return;
+    if (!message.trim() || isSending) return;
 
-    setMessages((prev) => [...prev, { role: "HUMAN", message }]);
-
+    console.log("chatNodePort", chatNodePort, messages);
     if (!chatNodePort) {
-      console.error("Chat Node 포트 정보를 찾을 수 없습니다.");
+      console.warn("Chat Node 포트 정보를 아직 불러오지 못했습니다.");
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "AI",
+          message: "채팅 서버 준비 중입니다. 잠시만 기다려주세요.",
+        },
+      ]);
       return;
     }
 
+    setIsSending(true);
+    setMessages((prev) => [...prev, { role: "HUMAN", message }]);
+
     try {
+      console.log("message", message);
+      if (!chatNodePort) throw new Error("Chat Node 포트 없음");
       const chatResponse = await createChatTrigger(
         projectId,
         chatNodePort,
         message
       );
-
       if (chatResponse) {
         setMessages((prev) => [
           ...prev,
           { role: chatResponse.role, message: chatResponse.message },
         ]);
       }
+      console.log("messagew", message);
     } catch (err) {
-      console.error("Chat Trigger 호출 실패:", err);
+      console.error(err);
       setMessages((prev) => [
         ...prev,
         { role: "AI", message: "응답을 가져오지 못했습니다." },
       ]);
+    } finally {
+      setIsSending(false);
     }
   };
 

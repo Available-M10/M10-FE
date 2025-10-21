@@ -2,15 +2,18 @@ import { createContext, useContext, useState, ReactNode } from "react";
 import type { Node, Edge } from "@xyflow/react";
 import { labelMap } from "../components/flows/components/lables/LabelMap";
 
+type Messages = {
+  role?: string;
+  message: string;
+};
+
 type ProjectContextType = {
   nodes: Node[];
   setNodes: React.Dispatch<React.SetStateAction<Node[]>>;
   edges: Edge[];
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
-  messages: { role: string; message: string }[];
-  setMessages: React.Dispatch<
-    React.SetStateAction<{ role: string; message: string }[]>
-  >;
+  messages: Messages[];
+  setMessages: React.Dispatch<React.SetStateAction<Messages[]>>;
 };
 
 const FLowContext = createContext<ProjectContextType | undefined>(undefined);
@@ -64,9 +67,7 @@ export function FlowProvider({ children }: { children: ReactNode }) {
     });
   });
 
-  const [messages, setMessages] = useState<{ role: string; message: string }[]>(
-    []
-  );
+  const [messages, setMessages] = useState<Messages[]>([]);
 
   return (
     <FLowContext.Provider

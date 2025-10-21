@@ -10,11 +10,12 @@ export function useDel() {
 
   const onNodesChange = (changes: NodeChange[]) => {
     const removedNodes = changes.filter((change) => change.type === "remove");
-
     if (removedNodes.length > 0) {
-      removedNodes.forEach(() => {
+      removedNodes.forEach((removed) => {
+        const nodeId = removed.id;
         const NodeIdInfo = portInfo.find((n) => n.nodeId);
         const delNodeId = NodeIdInfo?.nodeId;
+        console.log("nodeId", nodeId);
         console.log("portInfo", portInfo);
         console.log("NodeIdInfo", delNodeId);
         delNodes(delNodeId)

@@ -1,4 +1,5 @@
 import { ReactFlow, Background, Controls } from "@xyflow/react";
+import type { Node } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { CustomNode } from "./components/CustomNode";
 import { useFlow } from "../../context/FlowContext";
@@ -11,15 +12,17 @@ import { useDel } from "./hooks/useDel";
 
 export function ProjectFlow() {
   const { nodes, edges, setNodes } = useFlow();
-  const { onEdgesChange, onConnect } = useEdge([]);
-  const { onNodesChange } = useDel([]);
-  const { projectId, setNodeData } = useProjectId();
-
+  const { onEdgesChange, onConnect } = useEdge();
+  const { onNodesChange } = useDel();
+  const { projectId, setNodeData, portInfo } = useProjectId();
+  console.log("daasda", portInfo);
   useEffect(() => {
     async function loadNodes() {
       try {
+        console.log("aaaaaaaaaaaaaaaaaaa", portInfo);
         const apiNodes = await checkNode(projectId);
-        const transformed = transformApiNodes(apiNodes);
+        const transformed = transformApiNodes(apiNodes, portInfo);
+        console.log("Transformed Nodes:", transformed);
         setNodes(transformed);
         setNodeData(apiNodes);
       } catch (error) {
@@ -29,6 +32,13 @@ export function ProjectFlow() {
     if (projectId) loadNodes();
   }, [projectId, setNodes]);
 
+  const handleNodeClick = (_event: React.MouseEvent, node: Node) => {
+    console.log("Clicked Node Info:", {
+      id: node.id,
+      data: node.data,
+    });
+  };
+
   return (
     <div className="w-full h-full">
       <ReactFlow
@@ -37,6 +47,7 @@ export function ProjectFlow() {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onNodeClick={handleNodeClick}
         nodeTypes={{ custom: CustomNode }}
         fitView
       >

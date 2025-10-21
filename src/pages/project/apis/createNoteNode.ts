@@ -2,13 +2,13 @@ import { api } from "./axios";
 
 export async function createNoteNode(
   projectId: string,
-  outPortId: string,
+  inPortId: string,
   objectKey?: string
 ) {
   if (!objectKey) throw new Error("objectKey는 필수");
 
   const noteUrl = `/node/${projectId}/middle/document`;
-  const url = outPortId ? `${noteUrl}?linkPortId=${outPortId}` : noteUrl;
+  const url = inPortId ? `${noteUrl}?linkPortId=${inPortId}` : noteUrl;
 
   const body = {
     chunk_size: 100,
