@@ -13,11 +13,15 @@ export function useDel() {
     if (removedNodes.length > 0) {
       removedNodes.forEach((removed) => {
         const nodeId = removed.id;
-        const NodeIdInfo = portInfo.find((n) => n.nodeId);
+        // const NodeIdInfo = portInfo.find((n) => n.nodeId);
+        const NodeIdInfo = portInfo.find(
+          (n) => String(n.nodeId) === String(nodeId)
+        );
         const delNodeId = NodeIdInfo?.nodeId;
+        console.log("NodeIdInfo", NodeIdInfo);
         console.log("nodeId", nodeId);
         console.log("portInfo", portInfo);
-        console.log("NodeIdInfo", delNodeId);
+        console.log("delNodeId", delNodeId);
         delNodes(delNodeId)
           .then(() => console.log(`노드 ${delNodeId} 삭제 성공`, portInfo))
           .catch(() => console.log(`노드 ${delNodeId} 삭제 실패`));
