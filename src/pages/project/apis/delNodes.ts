@@ -8,9 +8,10 @@ export async function delNodes(nodeId: string) {
 
   try {
     const res = await api.delete(`/node/${nodeId}`);
-    console.log(`노드 ${nodeId} 삭제 성공`);
+    console.log(`노드 ${nodeId} 삭제 성공 시바ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ`);
     return res.data;
   } catch (err) {
     console.error(`노드 ${nodeId} 삭제 실패`, err);
+    throw err;
   }
 }

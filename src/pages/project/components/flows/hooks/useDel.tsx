@@ -19,7 +19,7 @@ export function useDel() {
         console.log("portInfo", portInfo);
         console.log("NodeIdInfo", delNodeId);
         delNodes(delNodeId)
-          .then(() => console.log(`노드 ${delNodeId} 삭제 성공`))
+          .then(() => console.log(`노드 ${delNodeId} 삭제 성공`, portInfo))
           .catch(() => console.log(`노드 ${delNodeId} 삭제 실패`));
       });
     }

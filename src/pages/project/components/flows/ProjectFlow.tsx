@@ -21,7 +21,8 @@ export function ProjectFlow() {
       try {
         console.log("aaaaaaaaaaaaaaaaaaa", portInfo);
         const apiNodes = await checkNode(projectId);
-        const transformed = transformApiNodes(apiNodes, portInfo);
+        console.log("bbbbbbbbbbbbbbbbb", apiNodes);
+        const transformed = transformApiNodes(apiNodes);
         console.log("Transformed Nodes:", transformed);
         setNodes(transformed);
         setNodeData(apiNodes);
